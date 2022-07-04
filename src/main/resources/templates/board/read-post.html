@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+<h1 th:text="'상세 게시물 보기'"></h1>
 <form th:action="@{/posts/{title}/delete(title=${post.title})}" th:object="${post}" th:method="delete">
     <div th:text="*{title}"></div>
     <div th:text="*{content}"></div>
@@ -12,5 +13,30 @@
     <a th:href="@{/posts/{title}/update(title=*{title})}"><span th:text="'수정하기'"></span></a>
     <button type="submit">게시글 삭제!</button>
 </form>
+<h1 th:text="'댓글 보기'"></h1>
+<form th:object="${commentForm}" th:action="@{/comment/{title}(title=${post.title})}" method="post">
+    <div>
+        <label for="content">내용</label>
+        <input type="text" id="content" th:field="*{content}">
+    </div>
+    <button type="submit">댓글 작성 완료!</button>
+</form>
+<table>
+    <tr>
+        <th>NUMBER</th>
+        <th>CONTENT</th>
+        <th>WRITER</th>
+    </tr>
+    <tr th:each="comment : ${comments}">
+        <td th:text="${commentStat.count}"></td>
+        <td th:text="${comment.content}"></td>
+        <td th:text="${comment.username}"></td>
+        <td>
+            <form th:action="@{/comment/{postTitle}/{commentsId}/delete(postTitle=${post.title}, commentsId=${comment.id})}" th:method="delete">
+                <button type="submit">댓글 삭제!</button>
+            </form>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

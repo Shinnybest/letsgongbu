@@ -1,8 +1,12 @@
 package com.example.letsgongbu.controller;
 
+import com.example.letsgongbu.domain.Comment;
 import com.example.letsgongbu.domain.Post;
+import com.example.letsgongbu.dto.request.CommentForm;
 import com.example.letsgongbu.dto.request.PostForm;
+import com.example.letsgongbu.dto.response.CommentResponseDto;
 import com.example.letsgongbu.service.BoardService;
+import com.example.letsgongbu.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +21,8 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
+
 
     // 전체 게시글 조회 + 검색하기
     @GetMapping("/posts")
@@ -30,9 +36,11 @@ public class BoardController {
 
     // 상세 게시글 보기
     @GetMapping("/posts/{postsTitle}")
-    public String getOnePost(@PathVariable String postsTitle, Model model) {
+    public String getOnePost(@PathVariable String postsTitle, Model model, @ModelAttribute("commentForm") CommentForm commentForm) {
         Post post = boardService.findPost(postsTitle);
+        List<CommentResponseDto> comments = commentService.findComments(post);
         model.addAttribute("post", post);
+        model.addAttribute("comments", comments);
         return "board/read-post";
     }
 
