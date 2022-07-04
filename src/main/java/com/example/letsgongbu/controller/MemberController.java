@@ -38,7 +38,6 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return "/login/login-page";
         }
-
         Member member = memberService.login(loginForm.getLoginId(),
                                             loginForm.getPassword(),
                                             loginForm.getOpen(),

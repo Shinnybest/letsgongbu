@@ -1,5 +1,6 @@
 package com.example.letsgongbu.domain;
 
+import com.example.letsgongbu.dto.request.PostForm;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -21,16 +22,18 @@ public class Post {
     private String content;
 
     @Column
-    private String mainCategory;
+    @Enumerated(EnumType.STRING)
+    private MainCategory mainCategory;
 
     @Column
-    private String subCategory;
+    @Enumerated(EnumType.STRING)
+    private SubCategory subCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    public Post(String title, String content, String mainCategory, String subCategory) {
+    public Post(String title, String content, MainCategory mainCategory, SubCategory subCategory) {
         this.title = title;
         this.content = content;
         this.mainCategory = mainCategory;
@@ -40,5 +43,12 @@ public class Post {
     public void setMember(Member member) {
         this.member = member;
         member.getPosts().add(this);
+    }
+
+    public void updatePost(PostForm postForm) {
+        this.title = postForm.getTitle();
+        this.content = postForm.getContent();
+        this.mainCategory = postForm.getMainCategory();
+        this.subCategory = postForm.getSubCategory();
     }
 }
