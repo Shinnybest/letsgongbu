@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 th:text="'게시물 업데이트'"></h1>
+<form th:action="@{/posts/{title}/update(title=${postForm.title})}" th:object="${postForm}" th:method="put">
+    <input type="hidden" name="_method" value="put">
+    <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" th:field="*{title}">
+    </div>
+    <div>
+        <label for="content">내용</label>
+        <input type="text" id="content" th:field="*{content}">
+    </div>
+    <div>
+        <select th:field="*{mainCategory}">
+            <option value="">선택</option>
+            <option th:value="'CS'" th:text="CS지식"></option>
+            <option th:value="'LANGUAGE'" th:text="언어공부"></option>
+            <option th:value="'FRAMEWORK'" th:text="프레임워크"></option>
+            <option th:value="'ALGORITHMS'" th:text="알고리즘"></option>
+        </select>
+    </div>
+    <div>
+        <select th:field="*{subCategory}">
+            <option value="">선택</option>
+            <option th:value="'NETWORK'" th:text="네트워크"></option>
+            <option th:value="'OS'" th:text="운영체제"></option>
+            <option th:value="'PYTHON'" th:text="파이썬"></option>
+            <option th:value="'JAVA'" th:text="자바"></option>
+            <option th:value="'SPRING'" th:text="Spring"></option>
+            <option th:value="'DJANGO'" th:text="Django"></option>
+            <option th:value="'HEAP'" th:text="힙"></option>
+            <option th:value="'DP'" th:text="'동적계획법(DP)'"></option>
+        </select>
+    </div>
+    <button type="submit">게시글 수정!</button>
+</form>
+</body>
+</html>

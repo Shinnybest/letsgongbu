@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/posts/{title}/delete(title=${post.title})}" th:object="${post}" th:method="delete">
+    <div th:text="*{title}"></div>
+    <div th:text="*{content}"></div>
+    <div th:text="*{member.username}"></div>
+    <a th:href="@{/posts/{title}/update(title=*{title})}"><span th:text="'수정하기'"></span></a>
+    <button type="submit">게시글 삭제!</button>
+</form>
+</body>
+</html>
