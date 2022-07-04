@@ -1,15 +1,18 @@
 package com.example.letsgongbu.domain;
 
 import com.example.letsgongbu.dto.request.PostForm;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Post {
+public class Post extends TimeStamped {
 
     @Id @Column(name = "POST_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +36,10 @@ public class Post {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
+    @OneToMany(mappedBy = "post")
+    List<Comment> comments = new ArrayList<>();
+
+    @Builder
     public Post(String title, String content, MainCategory mainCategory, SubCategory subCategory) {
         this.title = title;
         this.content = content;
