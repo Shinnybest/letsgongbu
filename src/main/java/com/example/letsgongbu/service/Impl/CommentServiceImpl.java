@@ -5,6 +5,7 @@ import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.domain.Post;
 import com.example.letsgongbu.dto.request.CommentForm;
 import com.example.letsgongbu.dto.response.CommentResponseDto;
+import com.example.letsgongbu.dto.response.PostResponseDto;
 import com.example.letsgongbu.repository.BoardRepository;
 import com.example.letsgongbu.repository.CommentRepository;
 import com.example.letsgongbu.repository.MemberRepository;
@@ -48,6 +49,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentsId) {
         commentRepository.delete(getComment(commentsId));
+    }
+
+    @Override
+    public List<PostResponseDto.PostList> findAllPostsCommentedByMe(String username) {
+        List<Post> posts = boardRepository.findAllByCommentByMe(username);
+        return posts.stream()
+                .map(post -> new PostResponseDto.PostList(post.getTitle(), post.getMember().getUsername()))
+                .collect(Collectors.toList());
     }
 
     private Post getPost(String postTitle) {

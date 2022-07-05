@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:object="${member}">
+    <div>
+        <h2 th:text="*{username}"></h2>
+    </div>
+</div>
+<div>
+    <div><a th:href="@{/mypage/posts/{username}(username=${member.username})}"><span th:text="'내가 쓴 게시글'"></span></a></div>
+    <div><a th:href="@{/mypage/posts/comments/{username}(username=${member.username})}"><span th:text="'내가 댓글 쓴 글'"></span></a></div>
+    <div><a th:href="@{/mypage/studyrooms/{username}(username=${member.username})}"><span th:text="'참여중인 공부방'"></span></a></div>
+</div>
+</body>
+</html>

@@ -3,6 +3,9 @@ package com.example.letsgongbu.service;
 
 import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.dto.request.LoginForm;
+import com.example.letsgongbu.dto.response.MemberResponseDto;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -16,4 +19,6 @@ public interface MemberService {
     Member login(String loginId, String password, boolean isChecked, HttpSession session, HttpServletResponse response);
 
     void signup(String username, String loginId, String password);
+
+    MemberResponseDto.MemberName getMemberName(HttpServletRequest request);
 }

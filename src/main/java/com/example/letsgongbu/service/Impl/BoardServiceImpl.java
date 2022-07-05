@@ -5,6 +5,7 @@ import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.domain.Post;
 import com.example.letsgongbu.domain.SubCategory;
 import com.example.letsgongbu.dto.request.PostForm;
+import com.example.letsgongbu.dto.response.PostResponseDto;
 import com.example.letsgongbu.repository.BoardRepository;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.BoardService;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,17 +38,13 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void uploadPost(PostForm postForm, HttpServletRequest request) {
         Post post = new Post(postForm.getTitle(), postForm.getContent(), postForm.getMainCategory(), postForm.getSubCategory());
-        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loginCookie")).findAny();
-        if (!cookie.isPresent()) {
-            // 예외처리
-        }
-        Optional<Member> member = memberRepository.findBySessionId(cookie.get().getValue());
-        if (!member.isPresent()) {
-            // 예외처리
-        }
-        post.setMember(member.get());
+        Cookie cookie = getCookie(request);
+        Member member = getMember(cookie);
+        post.setMember(member);
         boardRepository.save(post);
     }
+
+
 
     @Override
     public Post findPost(String postsTitle) {
@@ -84,5 +82,29 @@ public class BoardServiceImpl implements BoardService {
             // 예외처리
         }
         return new PostForm(post.get().getTitle(), post.get().getContent(), post.get().getMainCategory(), post.get().getSubCategory());
+    }
+
+    @Override
+    public List<PostResponseDto.PostList> findAllPostsByMe(String username) {
+        List<Post> posts = boardRepository.findAllByMember_Username(username);
+        return posts.stream()
+                .map(post -> new PostResponseDto.PostList(post.getTitle(), post.getMember().getUsername()))
+                .collect(Collectors.toList());
+    }
+
+    private Cookie getCookie(HttpServletRequest request) {
+        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loginCookie")).findAny();
+        if (!cookie.isPresent()) {
+            // 예외처리
+        }
+        return cookie.get();
+    }
+
+    private Member getMember(Cookie cookie) {
+        Optional<Member> member = memberRepository.findBySessionId(cookie.getValue());
+        if (!member.isPresent()) {
+            // 예외처리
+        }
+        return member.get();
     }
 }

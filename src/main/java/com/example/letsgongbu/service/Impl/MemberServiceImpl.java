@@ -2,6 +2,7 @@ package com.example.letsgongbu.service.Impl;
 
 import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.dto.request.LoginForm;
+import com.example.letsgongbu.dto.response.MemberResponseDto;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -68,5 +71,29 @@ public class MemberServiceImpl implements MemberService {
     public void signup(String username, String loginId, String password) {
         Member member = new Member(username, loginId, password, null, null);
         memberRepository.save(member);
+    }
+
+
+
+    @Override
+    public MemberResponseDto.MemberName getMemberName(HttpServletRequest request) {
+        Member member = getMember(getCookie(request));
+        return new MemberResponseDto.MemberName(member.getUsername());
+    }
+
+    private Cookie getCookie(HttpServletRequest request) {
+        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loginCookie")).findAny();
+        if (!cookie.isPresent()) {
+            // 예외처리
+        }
+        return cookie.get();
+    }
+
+    public Member getMember(Cookie cookie) {
+        Optional<Member> member = memberRepository.findBySessionId(cookie.getValue());
+        if (!member.isPresent()) {
+            // 예외처리
+        }
+        return member.get();
     }
 }

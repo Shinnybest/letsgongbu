@@ -2,6 +2,7 @@ package com.example.letsgongbu.service;
 
 import com.example.letsgongbu.domain.Post;
 import com.example.letsgongbu.dto.request.PostForm;
+import com.example.letsgongbu.dto.response.PostResponseDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -18,4 +19,6 @@ public interface BoardService {
     void deletePost(String postsTitle, HttpServletRequest request);
 
     PostForm getUpdatePost(String postsTitle);
+
+    List<PostResponseDto.PostList> findAllPostsByMe(String username);
 }
