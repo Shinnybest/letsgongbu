@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -23,7 +23,7 @@
 <div class="connecting">
     연결중...
 </div>
-<form id="messageForm" name="messageForm">
+<form id="chatMessage" name="chatMessage">
     <div class="form-group">
         <div class="input-group clearfix">
             <input type="text" id="message" placeholder="메세지 입력" autocomplete="off" class="form-control"/>
@@ -47,7 +47,8 @@
     }
 
     function onConnected() {
-        stompClient.subscribe('/topic', () => console.log("messagebroker.connected"));
+        chat = document.querySelector('#chat').value.trim();
+        stompClient.subscribe(`/topic/${chat}`, onMessageReceived);
         // stompClient.send("/app/chat",
         //     {},
         //     JSON.stringify({sender: chat, type: 'JOIN'})
@@ -55,7 +56,12 @@
         connectingElement.classList.add('hidden');
     }
 
-    let messageForm = document.querySelector('#messageForm');
+    function onMessageReceived(payload){
+        let message = JSON.parse(payload.body);
+        chatContainer.append(message.content);
+    }
+
+    let chatMessage = document.querySelector('#chatMessage');
     let messageInput = document.querySelector('#message');
     function sendMessage(event) {
         let messageContent = messageInput.value.trim();
@@ -65,7 +71,8 @@
                 content: messageInput.value,
                 type: 'CHAT'
             };
-            stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+            chat = document.querySelector('#chat').value.trim();
+            stompClient.send(`/app/chat/${chat}`, {}, JSON.stringify(chatMessage));
             let temp = `${messageInput.value}`
             chatContainer.append(temp);
             messageInput.value = '';
@@ -74,13 +81,13 @@
     }
 
     let connectingElement = document.querySelector('.connecting');
-    function onError(error) {
+    function onError() {
         connectingElement.textContent = '연결불가';
         connectingElement.style.color = 'red';
     }
 
     chatForm.addEventListener('submit', connect, true);
-    messageForm.addEventListener('submit', sendMessage, true)
+    chatMessage.addEventListener('submit', sendMessage, true)
 </script>
 </body>
 </html>

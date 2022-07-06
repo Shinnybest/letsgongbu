@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageForm {
+public class ChatMessage {
     private String chatroom;
     private String content;
     private String type;

@@ -1,13 +1,18 @@
 package com.example.letsgongbu.websocket;
 
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
 
-    @MessageMapping("/chat")
-    public void handle(MessageForm messageForm) {
-        System.out.println("messageForm.toString() = " + messageForm.toString());
+    @MessageMapping("/chat/{chatroom}")
+    @SendTo("/topic/{chatroom}")
+    public ChatMessage handle(@Payload ChatMessage chatMessage, @DestinationVariable String chatroom) {
+        System.out.println("messageForm.toString() = " + chatMessage.toString());
+        return chatMessage;
     }
 }
