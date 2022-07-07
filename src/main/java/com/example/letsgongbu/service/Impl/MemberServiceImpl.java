@@ -3,19 +3,18 @@ package com.example.letsgongbu.service.Impl;
 import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.dto.request.LoginForm;
 import com.example.letsgongbu.dto.response.MemberResponseDto;
+import com.example.letsgongbu.exception.CustomException;
+import com.example.letsgongbu.exception.Error;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,18 +45,10 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public Member login(String loginId, String password, boolean isChecked, HttpSession session, HttpServletResponse response) {
-        Optional<Member> memberOptional = memberRepository.findByLoginId(loginId);
-        if (memberOptional.isPresent()) {
-            memberOptional.filter(member -> member.getPassword().equals(password))
-                    .orElseThrow(IllegalStateException::new);
-            // Todo 에러가 아니라 Status Code 200 으로 메세지만 전달!
-        }
-        Member member = memberOptional.get();
-        if (session.getAttribute("login") != null) {
-            session.removeAttribute("login");
-        }
-        member.recordSessionId(session.getId(), LocalDate.now());
-        session.setAttribute("login", member);
+        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
+        // todo 비밀번호 불일치
+        member.recordSessionId(session.getId());
+        session.setAttribute("LOGIN", member);
         Cookie cookie = new Cookie("loginCookie", session.getId());
         cookie.setPath("/");
         if (isChecked) {
@@ -81,19 +72,25 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponseDto.MemberName(member.getUsername());
     }
 
-    private Cookie getCookie(HttpServletRequest request) {
-        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loginCookie")).findAny();
-        if (!cookie.isPresent()) {
-            // 예외처리
+    @Override
+    public MemberResponseDto.MemberName checkAutoLogin(String value) {
+        Member member = memberRepository.findBySessionId(value).orElse(null);
+        if (member==null) {
+            return null;
         }
-        return cookie.get();
+        return new MemberResponseDto.MemberName(member.getUsername());
+    }
+
+    private Cookie getCookie(HttpServletRequest request) {
+        return Arrays.stream(request.getCookies())
+                .filter(c -> c.getName().equals("loginCookie"))
+                .findAny()
+                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
     }
 
     public Member getMember(Cookie cookie) {
-        Optional<Member> member = memberRepository.findBySessionId(cookie.getValue());
-        if (!member.isPresent()) {
-            // 예외처리
-        }
-        return member.get();
+        return memberRepository
+                .findBySessionId(cookie.getValue())
+                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
     }
 }

@@ -6,18 +6,18 @@ import com.example.letsgongbu.domain.Post;
 import com.example.letsgongbu.dto.request.CommentForm;
 import com.example.letsgongbu.dto.response.CommentResponseDto;
 import com.example.letsgongbu.dto.response.PostResponseDto;
+import com.example.letsgongbu.exception.CustomException;
+import com.example.letsgongbu.exception.Error;
 import com.example.letsgongbu.repository.BoardRepository;
 import com.example.letsgongbu.repository.CommentRepository;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,34 +60,27 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Post getPost(String postTitle) {
-        Optional<Post> post = boardRepository.findByTitle(postTitle);
-        if (!post.isPresent()) {
-            // 예외처리
-        }
-        return post.get();
+        return boardRepository
+                .findByTitle(postTitle)
+                .orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
     }
 
     private Cookie getCookie(HttpServletRequest request) {
-        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loginCookie")).findAny();
-        if (!cookie.isPresent()) {
-            // 예외처리
-        }
-        return cookie.get();
+        return Arrays.stream(request.getCookies())
+                .filter(c -> c.getName().equals("loginCookie"))
+                .findAny()
+                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
     }
 
     private Member getMember(Cookie cookie) {
-        Optional<Member> member = memberRepository.findBySessionId(cookie.getValue());
-        if (!member.isPresent()) {
-            // 예외처리
-        }
-        return member.get();
+        return memberRepository
+                .findBySessionId(cookie.getValue())
+                .orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
     }
 
     private Comment getComment(Long commentsId) {
-        Optional<Comment> comment = commentRepository.findById(commentsId);
-        if (!comment.isPresent()) {
-
-        }
-        return comment.get();
+        return commentRepository
+                .findById(commentsId)
+                .orElseThrow(() -> new CustomException(Error.COMMENT_NOT_FOUND));
     }
 }

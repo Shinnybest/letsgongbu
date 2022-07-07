@@ -6,18 +6,18 @@ import com.example.letsgongbu.domain.Post;
 import com.example.letsgongbu.domain.SubCategory;
 import com.example.letsgongbu.dto.request.PostForm;
 import com.example.letsgongbu.dto.response.PostResponseDto;
+import com.example.letsgongbu.exception.CustomException;
+import com.example.letsgongbu.exception.Error;
 import com.example.letsgongbu.repository.BoardRepository;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,44 +44,31 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.save(post);
     }
 
-
-
     @Override
     public Post findPost(String postsTitle) {
-        Optional<Post> post = boardRepository.findByTitle(postsTitle);
-        if (!post.isPresent()) {
-            // 예외처리
-        }
-        return post.get();
+        return boardRepository
+                .findByTitle(postsTitle)
+                .orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
     }
 
     @Transactional
     @Override
     public void updatePost(String postsTitle, PostForm postForm, HttpServletRequest request) {
-        Optional<Post> post = boardRepository.findByTitle(postsTitle);
-        if (!post.isPresent()) {
-            // 예외처리
-        }
-        post.get().updatePost(postForm);
+        Post post = boardRepository.findByTitle(postsTitle).orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
+        post.updatePost(postForm);
     }
 
     @Transactional
     @Override
     public void deletePost(String postsTitle, HttpServletRequest request) {
-        Optional<Post> post = boardRepository.findByTitle(postsTitle);
-        if (!post.isPresent()) {
-            // 예외처리
-        }
-        boardRepository.delete(post.get());
+        Post post = boardRepository.findByTitle(postsTitle).orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
+        boardRepository.delete(post);
     }
 
     @Override
     public PostForm getUpdatePost(String postsTitle) {
-        Optional<Post> post = boardRepository.findByTitle(postsTitle);
-        if (!post.isPresent()) {
-            // 예외처리
-        }
-        return new PostForm(post.get().getTitle(), post.get().getContent(), post.get().getMainCategory(), post.get().getSubCategory());
+        Post post = boardRepository.findByTitle(postsTitle).orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
+        return new PostForm(post.getTitle(), post.getContent(), post.getMainCategory(), post.getSubCategory());
     }
 
     @Override
@@ -93,18 +80,15 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private Cookie getCookie(HttpServletRequest request) {
-        Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("loginCookie")).findAny();
-        if (!cookie.isPresent()) {
-            // 예외처리
-        }
-        return cookie.get();
+        return Arrays.stream(request.getCookies())
+                .filter(c -> c.getName().equals("loginCookie"))
+                .findAny()
+                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
     }
 
     private Member getMember(Cookie cookie) {
-        Optional<Member> member = memberRepository.findBySessionId(cookie.getValue());
-        if (!member.isPresent()) {
-            // 예외처리
-        }
-        return member.get();
+        return memberRepository
+                .findBySessionId(cookie.getValue())
+                .orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
     }
 }
