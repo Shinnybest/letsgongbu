@@ -88,7 +88,7 @@ public class BoardServiceImpl implements BoardService {
 
     private Member getMember(Cookie cookie) {
         return memberRepository
-                .findBySessionId(cookie.getValue())
+                .findByCookieValue(cookie.getValue())
                 .orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
     }
 }
