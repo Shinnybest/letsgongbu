@@ -13,4 +13,8 @@ public interface StudyRoomService {
     void updateStudyRoom(Long roomId, StudyRoomForm studyRoomForm, Object login);
 
     void deleteStudyRoom(Long roomId, StudyRoomForm studyRoomForm, Object login);
+
+    void joinStudyRoom(Long roomId, StudyRoomForm studyRoomForm, Object login);
+
+    void leaveStudyRoom(Long roomId, StudyRoomForm studyRoomForm, Object login);
 }

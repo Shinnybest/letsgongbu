@@ -50,4 +50,15 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         StudyRoom room = studyRoomRepository.findById(roomId).orElseThrow(() -> new CustomException(Error.STUDYROOM_NOT_FOUND));
         studyRoomRepository.delete(room);
     }
+
+    @Override
+    public void joinStudyRoom(Long roomId, StudyRoomForm studyRoomForm, Object login) {
+        // 이미 입장된 스터디룸이면 참여 불가능
+
+    }
+
+    @Override
+    public void leaveStudyRoom(Long roomId, StudyRoomForm studyRoomForm, Object login) {
+        // 입장된 스터디룸 아니면 leave 불가능
+    }
 }

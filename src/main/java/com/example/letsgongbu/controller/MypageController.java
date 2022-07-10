@@ -1,13 +1,11 @@
 package com.example.letsgongbu.controller;
 
 
-import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.dto.response.MemberResponseDto;
 import com.example.letsgongbu.dto.response.PostResponseDto;
 import com.example.letsgongbu.service.BoardService;
 import com.example.letsgongbu.service.CommentService;
 import com.example.letsgongbu.service.MemberService;
-import com.example.letsgongbu.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
