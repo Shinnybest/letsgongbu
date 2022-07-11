@@ -25,7 +25,7 @@ public class MypageController {
 
     @GetMapping("/mypage")
     public String getMyPage(HttpServletRequest request, Model model) {
-        MemberResponseDto.MemberName dto = memberService.getMemberName(request);
+        Object dto = memberService.getMemberName(request);
         model.addAttribute("member", dto);
         return "/my-page/my-page";
     }

@@ -1,6 +1,5 @@
 package com.example.letsgongbu.controller;
 
-import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.dto.request.LoginForm;
 import com.example.letsgongbu.dto.request.SignupForm;
 import com.example.letsgongbu.service.MemberService;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -26,30 +23,6 @@ public class MemberController {
     @GetMapping("/login")
     public String getLoginPage(@ModelAttribute("loginForm") LoginForm loginForm, Model model) {
         return "/login/login-page";
-    }
-
-    @PostMapping("/login")
-    public String login(@ModelAttribute LoginForm loginForm,
-                        BindingResult bindingResult,
-                        @RequestParam(defaultValue = "/") String redirectURL,
-                        HttpSession session,
-                        HttpServletResponse response) {
-
-        if (bindingResult.hasErrors()) {
-            return "/login/login-page";
-        }
-        Member member = memberService.login(loginForm.getLoginId(),
-                                            loginForm.getPassword(),
-                                            loginForm.getOpen(),
-                                            session,
-                                            response);
-
-        if (member == null) {
-            bindingResult.reject("loginFail", "등록되지 않은 사용자입니다. 아이디를 다시 한번 확인해주세요.");
-            return "/login/login-page";
-        }
-
-        return "redirect:" + redirectURL;
     }
 
     @GetMapping("/sign-up")
@@ -84,6 +57,11 @@ public class MemberController {
     @PostMapping("/login/information")
     public String saveInformation(LoginForm dto) {
         memberService.saveInformation(dto);
+        return "redirect:/";
+    }
+
+    @PostMapping("/withdrawal")
+    public String removeUser() {
         return "redirect:/";
     }
 }

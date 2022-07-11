@@ -3,25 +3,25 @@ package com.example.letsgongbu.service.Impl;
 import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.dto.request.LoginForm;
 import com.example.letsgongbu.dto.response.MemberResponseDto;
-import com.example.letsgongbu.exception.CustomException;
-import com.example.letsgongbu.exception.Error;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private static final int COOKIE_VALIDATION_TIME = 60 * 60 * 24 * 7;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
 
     @Override
     public void kakaoLogin(String code) {
@@ -42,55 +42,18 @@ public class MemberServiceImpl implements MemberService {
         // TODO 쿠키 발급 후 전달
     }
 
-    @Transactional
-    @Override
-    public Member login(String loginId, String password, boolean isChecked, HttpSession session, HttpServletResponse response) {
-        Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
-        // todo 비밀번호 불일치
-        member.recordSessionId(session.getId());
-        session.setAttribute("LOGIN", member);
-        Cookie cookie = new Cookie("loginCookie", session.getId());
-        cookie.setPath("/");
-        if (isChecked) {
-            cookie.setMaxAge(COOKIE_VALIDATION_TIME);
-        }
-        response.addCookie(cookie);
-        return member;
-    }
-
     @Override
     public void signup(String username, String loginId, String password) {
-        Member member = new Member(username, loginId, password, null, null);
+        String encodePassword = passwordEncoder.encode(password);
+        Member member = new Member(username, loginId, encodePassword, null, null);
         memberRepository.save(member);
     }
 
-
-
     @Override
-    public MemberResponseDto.MemberName getMemberName(HttpServletRequest request) {
-        Member member = getMember(getCookie(request));
-        return new MemberResponseDto.MemberName(member.getUsername());
-    }
-
-    @Override
-    public MemberResponseDto.MemberName checkAutoLogin(String value) {
-        Member member = memberRepository.findBySessionId(value).orElse(null);
-        if (member==null) {
-            return null;
-        }
-        return new MemberResponseDto.MemberName(member.getUsername());
-    }
-
-    private Cookie getCookie(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-                .filter(c -> c.getName().equals("loginCookie"))
-                .findAny()
-                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
-    }
-
-    public Member getMember(Cookie cookie) {
-        return memberRepository
-                .findBySessionId(cookie.getValue())
-                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
+    public Object getMemberName(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Object sessionValue = session.getAttribute("LOGIN");
+        String value = (String) sessionValue;
+        return new MemberResponseDto.MemberName(value);
     }
 }

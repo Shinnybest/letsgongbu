@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginForm {
-    private String loginId;
+    private String username;
     private String password;
     private Boolean open;
 
