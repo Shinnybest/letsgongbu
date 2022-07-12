@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+</head>
+<body>
+<div id="chat-container">
+</div>
+<div>
+    <form id="chatForm" name="chatForm">
+        <button type="submit">시작하기</button>
+    </form>
+</div>
+<div class="connecting">
+    연결중...
+</div>
+<form id="chatMessage" name="chatMessage">
+    <div class="form-group">
+            <input type="text" id="message" placeholder="메세지 입력" autocomplete="off" class="form-control"/>
+            <button type="submit" class="primary">보내기</button>
+    </div>
+</form>
+<script>
+    let chatForm = document.querySelector('#chatForm');
+    let chatContainer = document.querySelector('#chat-container');
+    let chatMessage = document.querySelector('#chatMessage');
+    let messageInput = document.querySelector('#message');
+    let connectingElement = document.querySelector('.connecting');
+    let stompClient = null;
+    let roomId = null;
+
+    function getParam() {
+        let param = [];
+        let url = decodeURIComponent(location.href);
+        let params;
+        params = url.substring(url.indexOf("?")+1, url.length);
+        params = params.split("&")
+
+        let size = params.length;
+        let key, value;
+        for(i=0; i<size; i++) {
+            key = params[i].split("=")[0];
+            value = params[i].split("=")[1];
+            param[key] = value;
+        }
+        return param;
+    }
+
+    function connect(event) {
+        let socket = new SockJS('/portfolio');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, onConnected, onError);
+        event.preventDefault();
+    }
+
+    function onConnected() {
+        roomId = getParam()["roomId"];
+        stompClient.subscribe(`/topic/${roomId}`, onMessageReceived);
+        let chatMessage = {
+            chatroom: roomId,
+            content: messageInput.value,
+            type: 'JOIN'
+        };
+        stompClient.send(`/app/chat/${roomId}`,
+            {},
+            JSON.stringify(chatMessage))
+    }
+
+    function onMessageReceived(payload){
+        let new_pTag = document.createElement('p');
+        let message = JSON.parse(payload.body);
+        if (message.type === 'JOIN') {
+            new_pTag.innerHTML = message.chatroom + "에 " + "누구 님이 입장하셨습니다.";
+        }
+        else if (message.type === 'CHAT') {
+            new_pTag.innerHTML = "누구 님: " + message.content;
+        }
+        chatContainer.appendChild(new_pTag);
+    }
+
+    function sendMessage(event) {
+        let messageContent = messageInput.value.trim();
+        roomId = getParam()["roomId"];
+        if(messageContent && stompClient) {
+            let chatMessage = {
+                chatroom: roomId,
+                content: messageInput.value,
+                type: 'CHAT'
+            };
+            stompClient.send(`/app/chat/${roomId}`, {}, JSON.stringify(chatMessage));
+            messageInput.value = '';
+        }
+        event.preventDefault();
+    }
+
+    // case : error -> active (ex. server 종료 후 재 연결) 코드 필요.
+    function onError() {
+        connectingElement.textContent = '연결불가';
+        connectingElement.style.color = 'red';
+    }
+
+    chatForm.addEventListener('submit', connect, true);
+    chatMessage.addEventListener('submit', sendMessage, true)
+</script>
+</body>
+</html>
