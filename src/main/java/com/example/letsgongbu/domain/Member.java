@@ -27,10 +27,13 @@ public class Member {
     private String password;
 
     @Column
-    private String sessionId;
+    private String cookieValue;
 
     @Column
     private LocalDate sessionLimit;
+
+    @Column
+    private boolean Enabled;
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
@@ -38,16 +41,15 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Comment> comments = new ArrayList<>();
 
-    public Member(String username, String loginId, String password, String sessionId, LocalDate sessionLimit) {
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<MemberStudyRoom> memberStudyRooms = new ArrayList<>();
+
+
+    public Member(String username, String loginId, String password, String cookieValue, LocalDate sessionLimit) {
         this.username = username;
         this.loginId = loginId;
         this.password = password;
-        this.sessionId = sessionId;
-        this.sessionLimit = sessionLimit;
-    }
-
-    public void recordSessionId(String sessionId, LocalDate sessionLimit) {
-        this.sessionId = sessionId;
+        this.cookieValue = cookieValue;
         this.sessionLimit = sessionLimit;
     }
 }
