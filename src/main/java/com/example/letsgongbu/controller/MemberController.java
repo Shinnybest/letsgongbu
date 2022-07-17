@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.thymeleaf.spring5.view.ThymeleafView;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -21,13 +24,13 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/login")
-    public String getLoginPage(@ModelAttribute("loginForm") LoginForm loginForm, Model model) {
-        return "/login/login-page";
+    public String getLoginPage(@ModelAttribute("loginForm") LoginForm loginForm) {
+        return "login/loginPage";
     }
 
     @GetMapping("/sign-up")
-    public String getSignupPage(@ModelAttribute SignupForm signupForm) {
-        return "/login/sign-up";
+    public String getSignupPage(@ModelAttribute("signupForm") SignupForm signupForm) {
+        return "login/sign-up";
     }
 
     @PostMapping("/sign-up")
@@ -50,7 +53,7 @@ public class MemberController {
     @GetMapping("/login/information")
     public String getInformationPage() {
         // TODO 회원가입이면
-        return "/login/information";
+        return "login/information";
         // TODO 기존 고객이면 바로 "redirect:/";
     }
 
