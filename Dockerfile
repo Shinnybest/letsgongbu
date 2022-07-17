@@ -1,4 +1,5 @@
 FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-COPY ./build/libs/*.jar app.jar
+ARG JAR_FILE=letsgongbu-0.0.1-SNAPSHOT.jar
+COPY ./build/libs/${JAR_FILE} app.jar
+#VOLUME /tmp
 ENTRYPOINT ["java","-jar","/app.jar"]
