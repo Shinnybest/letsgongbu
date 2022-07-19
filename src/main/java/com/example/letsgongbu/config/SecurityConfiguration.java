@@ -6,6 +6,7 @@ import com.example.letsgongbu.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,9 +34,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .antMatchers("/", "/login", "/posts", "/studyroom/all", "/sign-up")
+                        .antMatchers("/", "/login", "/posts", "/studyroom/all", "/sign-up", "/test/get/post", "/test/post/post", "/login/information")
+                        .permitAll().antMatchers(HttpMethod.POST, "/api/post")
                         .permitAll()
                         .anyRequest().authenticated())
+                .csrf().disable()
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
