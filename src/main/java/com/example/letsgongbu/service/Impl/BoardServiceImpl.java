@@ -1,45 +1,54 @@
 package com.example.letsgongbu.service.Impl;
 
-import com.example.letsgongbu.domain.MainCategory;
 import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.domain.Post;
-import com.example.letsgongbu.domain.SubCategory;
 import com.example.letsgongbu.dto.request.PostForm;
 import com.example.letsgongbu.dto.response.PostResponseDto;
+import com.example.letsgongbu.dto.response.PostTestResp;
+import com.example.letsgongbu.elasticsearch.repository.CustomPostSearchRepository;
 import com.example.letsgongbu.exception.CustomException;
 import com.example.letsgongbu.exception.Error;
 import com.example.letsgongbu.repository.BoardRepository;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
+    private final CustomPostSearchRepository searchRepository;
 
     @Override
-    public List<Post> findCategoryPosts(String mainCategory, String subCategory) {
-        if (mainCategory.equals("ALL") & subCategory.equals("ALL")) {
-            return boardRepository.findAll();
-        }
-        return boardRepository.findAllByMainCategoryAndSubCategory(MainCategory.valueOf(mainCategory), SubCategory.valueOf(subCategory));
+    public List<Post> findAllPosts() {
+        return boardRepository.findAll();
     }
 
     @Override
-    public void uploadPost(PostForm postForm, HttpServletRequest request) {
+    public List<PostTestResp> findSearchPosts(String word, Pageable p) {
+        return searchRepository.searchByWord(word, p);
+    }
+
+    @Override
+    @Transactional
+    public void uploadPost(PostForm postForm, UserDetails userDetails) {
         Post post = new Post(postForm.getTitle(), postForm.getContent(), postForm.getMainCategory(), postForm.getSubCategory());
-        Cookie cookie = getCookie(request);
-        Member member = getMember(cookie);
+        elasticsearchRestTemplate.save(post, IndexCoordinates.of("post"));
+        Member member = memberRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
         post.setMember(member);
         boardRepository.save(post);
     }
@@ -77,18 +86,5 @@ public class BoardServiceImpl implements BoardService {
         return posts.stream()
                 .map(post -> new PostResponseDto.PostList(post.getTitle(), post.getMember().getUsername()))
                 .collect(Collectors.toList());
-    }
-
-    private Cookie getCookie(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-                .filter(c -> c.getName().equals("loginCookie"))
-                .findAny()
-                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
-    }
-
-    private Member getMember(Cookie cookie) {
-        return memberRepository
-                .findByCookieValue(cookie.getValue())
-                .orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
     }
 }

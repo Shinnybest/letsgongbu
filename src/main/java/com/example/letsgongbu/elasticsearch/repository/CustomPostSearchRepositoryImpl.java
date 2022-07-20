@@ -1,13 +1,13 @@
 package com.example.letsgongbu.elasticsearch.repository;
 
 import com.example.letsgongbu.domain.Post;
+import com.example.letsgongbu.dto.request.PostTestReq;
+import com.example.letsgongbu.dto.response.PostTestResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
@@ -24,10 +24,10 @@ public class CustomPostSearchRepositoryImpl implements CustomPostSearchRepositor
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
-    public List<Post> searchByWord(String word, Pageable p) {
+    public List<PostTestResp> searchByWord(String word, Pageable p) {
         Criteria criteria = Criteria.where("content").contains(word);
-        Query query = new CriteriaQuery(criteria).setPageable(p);
-        SearchHits<Post> search = elasticsearchOperations.search(query, Post.class, IndexCoordinates.of("post"));
+        CriteriaQuery query = new CriteriaQuery(criteria);
+        SearchHits<PostTestResp> search = elasticsearchOperations.search(query, PostTestResp.class, IndexCoordinates.of("post"));
         return search.stream()
                 .map(SearchHit::getContent)
                 .collect(Collectors.toList());

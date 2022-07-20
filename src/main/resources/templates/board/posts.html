@@ -5,16 +5,24 @@
     <title>Title</title>
 </head>
 <body>
+<h1 th:text="'게시물 검색하기'"></h1>
+<form th:object="${searchForm}" th:action="@{search}" method="get">
+    <div>
+        <label for="word">단어입력</label>
+        <input th:type="text" id="word" th:field="*{word}" name="word">
+    </div>
+    <button type="submit">검색</button>
+</form>
 <table>
     <tr>
         <th>NUMBER</th>
         <th>TITLE</th>
-        <th>WRITER</th>
+        <th>CONTENT</th>
     </tr>
     <tr th:each="post : ${posts}">
         <td th:text="${postStat.count}"></td>
         <td th:text="${post.title}"><a th:href="@{/posts/{title}(title=${post.title})}"></a></td>
-        <td th:text="${post.member.username}"></td>
+        <td th:text="${post.content}"></td>
     </tr>
 </table>
 </body>
