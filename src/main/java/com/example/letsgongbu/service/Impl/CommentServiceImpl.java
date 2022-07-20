@@ -13,6 +13,7 @@ import com.example.letsgongbu.repository.CommentRepository;
 import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,9 +38,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void saveComment(String postTitle, CommentForm commentForm, HttpServletRequest request) {
+    public void saveComment(String postTitle, CommentForm commentForm, UserDetails userDetails) {
         Comment comment = new Comment(commentForm.getContent());
-        Member member = getMember(getCookie(request));
+        Member member = memberRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
         comment.setMember(member);
         Post post = getPost(postTitle);
         comment.setPost(post);
@@ -63,19 +64,6 @@ public class CommentServiceImpl implements CommentService {
         return boardRepository
                 .findByTitle(postTitle)
                 .orElseThrow(() -> new CustomException(Error.POST_NOT_FOUND));
-    }
-
-    private Cookie getCookie(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
-                .filter(c -> c.getName().equals("loginCookie"))
-                .findAny()
-                .orElseThrow(() -> new CustomException(Error.COOKIE_NOT_FOUND));
-    }
-
-    private Member getMember(Cookie cookie) {
-        return memberRepository
-                .findByCookieValue(cookie.getValue())
-                .orElseThrow(() -> new CustomException(Error.MEMBER_NOT_EXIST));
     }
 
     private Comment getComment(Long commentsId) {
