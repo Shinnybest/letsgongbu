@@ -19,7 +19,9 @@ public enum Error {
     ALREADY_IN_STUDYROOM(HttpStatus.BAD_REQUEST, "400", "이미 참여 중인 스터디룸입니다."),
     OWNER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "400", "방장은 스터디룸을 떠날 수 없습니다."),
     NOT_JOINED_STUDYROOM(HttpStatus.UNAUTHORIZED, "401", "참여 중인 스터디룸이 아닙니다."),
-    MEMBER_STUDYROOM_NOT_FOUND(HttpStatus.UNAUTHORIZED, "401", "참여 중인 스터디룸이 아닙니다.");
+    MEMBER_STUDYROOM_NOT_FOUND(HttpStatus.UNAUTHORIZED, "401", "참여 중인 스터디룸이 아닙니다."),
+    NO_AUTHORITY_POST(HttpStatus.UNAUTHORIZED, "401", "해당 게시물에 수정/삭제 권한이 없습니다."),
+    ;
 
     private final HttpStatus httpStatus;
     private final String errorCode;
