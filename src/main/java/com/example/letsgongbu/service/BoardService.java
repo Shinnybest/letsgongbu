@@ -1,27 +1,28 @@
 package com.example.letsgongbu.service;
 
-import com.example.letsgongbu.domain.Post;
+
 import com.example.letsgongbu.dto.request.PostForm;
+import com.example.letsgongbu.dto.request.PostUpdateForm;
+import com.example.letsgongbu.dto.response.PostAndCommentResponseDto;
+import com.example.letsgongbu.dto.response.PostChange;
 import com.example.letsgongbu.dto.response.PostResponseDto;
-import com.example.letsgongbu.dto.response.PostTestResp;
+import com.example.letsgongbu.security.UserDetailsImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface BoardService {
-    List<Post> findAllPosts();
-    List<PostTestResp> findSearchPosts(String word, Pageable p);
-    void uploadPost(PostForm postForm, UserDetails userDetails);
+    List<PostResponseDto> findAllPosts();
+    List<PostResponseDto> findSearchPosts(String word, Pageable p);
+    Long uploadPost(PostForm postForm, UserDetails userDetails);
 
-    Post findPost(String postsTitle);
+    PostAndCommentResponseDto findPostAndComments(Long postId, UserDetails userDetails);
 
-    void updatePost(String postsTitle, PostForm postForm, HttpServletRequest request);
+    void updatePost(Long postId, PostForm postForm, UserDetailsImpl userDetails);
 
-    void deletePost(String postsTitle, HttpServletRequest request);
+    void deletePost(Long postId, UserDetailsImpl userDetails);
 
-    PostForm getUpdatePost(String postsTitle);
+    PostUpdateForm getUpdatePost(Long postId, UserDetails userDetails);
 
-    List<PostResponseDto.PostList> findAllPostsByMe(String username);
+    List<PostResponseDto> findAllPostsByMe(UserDetails userDetails);
 }
