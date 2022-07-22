@@ -58,4 +58,12 @@ public class Post extends TimeStamped {
         this.mainCategory = postForm.getMainCategory();
         this.subCategory = postForm.getSubCategory();
     }
+
+    public Post(Long id, String title, String content, MainCategory mainCategory, SubCategory subCategory) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.mainCategory = mainCategory;
+        this.subCategory = subCategory;
+    }
 }
