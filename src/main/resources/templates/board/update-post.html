@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1 th:text="'게시물 업데이트'"></h1>
-<form th:action="@{/posts/{title}/update(title=${postForm.title})}" th:object="${postForm}" th:method="put">
+<form th:action="@{/posts/{postId}/update(postId=${postUpdateForm.id})}" th:object="${postUpdateForm}" th:method="put">
     <input type="hidden" name="_method" value="put">
     <div>
         <label for="title">제목</label>
@@ -19,23 +19,23 @@
     <div>
         <select th:field="*{mainCategory}">
             <option value="">선택</option>
-            <option th:value="'CS'" th:text="CS지식"></option>
-            <option th:value="'LANGUAGE'" th:text="언어공부"></option>
-            <option th:value="'FRAMEWORK'" th:text="프레임워크"></option>
-            <option th:value="'ALGORITHMS'" th:text="알고리즘"></option>
+            <option th:value="'CS'" th:text="#{mainCategory.CS}"></option>
+            <option th:value="'LANGUAGE'" th:text="#{mainCategory.Framework}"></option>
+            <option th:value="'FRAMEWORK'" th:text="#{mainCategory.Language}"></option>
+            <option th:value="'ALGORITHMS'" th:text="#{mainCategory.Algorithm}"></option>
         </select>
     </div>
     <div>
         <select th:field="*{subCategory}">
             <option value="">선택</option>
-            <option th:value="'NETWORK'" th:text="네트워크"></option>
-            <option th:value="'OS'" th:text="운영체제"></option>
-            <option th:value="'PYTHON'" th:text="파이썬"></option>
-            <option th:value="'JAVA'" th:text="자바"></option>
-            <option th:value="'SPRING'" th:text="Spring"></option>
-            <option th:value="'DJANGO'" th:text="Django"></option>
-            <option th:value="'HEAP'" th:text="힙"></option>
-            <option th:value="'DP'" th:text="'동적계획법(DP)'"></option>
+            <option th:value="'NETWORK'" th:text="#{subCategory.Network}"></option>
+            <option th:value="'OS'" th:text="#{subCategory.OS}"></option>
+            <option th:value="'PYTHON'" th:text="#{subCategory.Python}"></option>
+            <option th:value="'JAVA'" th:text="#{subCategory.Java}"></option>
+            <option th:value="'SPRING'" th:text="#{subCategory.Spring}"></option>
+            <option th:value="'DJANGO'" th:text="#{subCategory.Django}"></option>
+            <option th:value="'HEAP'" th:text="#{subCategory.Heap}"></option>
+            <option th:value="'DP'" th:text="#{subCategory.DP}"></option>
         </select>
     </div>
     <button type="submit">게시글 수정!</button>

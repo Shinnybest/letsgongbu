@@ -6,15 +6,19 @@
 </head>
 <body>
 <h1 th:text="'상세 게시물 보기'"></h1>
-<form th:action="@{/posts/{title}/delete(title=${post.title})}" th:object="${post}" th:method="delete">
+<form th:action="@{/posts/{postId}/delete(postId=${postAndComments.id})}" th:object="${postAndComments}" th:method="delete">
     <div th:text="*{title}"></div>
-    <div th:text="*{content}"></div>
-    <div th:text="*{member.username}"></div>
-    <a th:href="@{/posts/{title}/update(title=*{title})}"><span th:text="'수정하기'"></span></a>
+    <div th:text="*{postContent}"></div>
+    <div th:text="*{postWriter}"></div>
+    <div th:text="*{postCreatedAt}"></div>
+    <div th:text="*{mainCategory}"></div>
+    <div th:text="*{subCategory}"></div>
+    <div th:text="*{commentCnt}"></div>
+    <a th:href="@{/posts/{postId}/update(postId=*{id})}"><span th:text="'수정하기'"></span></a>
     <button type="submit">게시글 삭제!</button>
 </form>
 <h1 th:text="'댓글 보기'"></h1>
-<form th:object="${commentForm}" th:action="@{/comment/{title}(title=${post.title})}" method="post">
+<form th:object="${commentForm}" th:action="@{/comment/{postId}(postId=${postAndComments.id})}" method="post">
     <div>
         <label for="content">내용</label>
         <input type="text" id="content" th:field="*{content}">
@@ -26,13 +30,15 @@
         <th>NUMBER</th>
         <th>CONTENT</th>
         <th>WRITER</th>
+        <th>DATE</th>
     </tr>
-    <tr th:each="comment : ${comments}">
+    <tr th:each="comment : ${postAndComments.comments}">
         <td th:text="${commentStat.count}"></td>
         <td th:text="${comment.content}"></td>
-        <td th:text="${comment.username}"></td>
+        <td th:text="${comment.writer}"></td>
+        <td th:text="${comment.createdAt}"></td>
         <td>
-            <form th:action="@{/comment/{postTitle}/{commentsId}/delete(postTitle=${post.title}, commentsId=${comment.id})}" th:method="delete">
+            <form th:action="@{/comment/{postId}/{commentId}/delete(postId=${postAndComments.id}, commentId=${comment.id})}" th:method="delete">
                 <button type="submit">댓글 삭제!</button>
             </form>
         </td>

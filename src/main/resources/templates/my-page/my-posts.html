@@ -9,12 +9,22 @@
     <tr>
         <th>NUMBER</th>
         <th>TITLE</th>
+        <th>CONTENT</th>
         <th>WRITER</th>
+        <th>DATE</th>
+        <th>MAIN</th>
+        <th>SUB</th>
+        <th>COMMENTS</th>
     </tr>
     <tr th:each="post : ${posts}">
         <td th:text="${postStat.count}"></td>
-        <td th:text="${post.title}"><a th:href="@{/posts/{title}(title=${post.title})}"></a></td>
-        <td th:text="${post.username}"></td>
+        <td th:text="${post.title}"><a th:href="@{/posts/{postId}(postId=${post.id})}"></a></td>
+        <td th:text="${post.content}"></td>
+        <td th:text="${post.writer}"></td>
+        <td th:text="${post.createdAt}"></td>
+        <td th:text="${post.mainCategory}"></td>
+        <td th:text="${post.subCategory}"></td>
+        <td th:text="${post.commentCnt}"></td>
     </tr>
 </table>
 </body>
