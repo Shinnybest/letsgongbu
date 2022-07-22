@@ -1,7 +1,8 @@
 package com.example.letsgongbu.controller;
 
 import com.example.letsgongbu.dto.request.StudyRoomForm;
-import com.example.letsgongbu.dto.response.StudyRoomResponseDto.All;
+import com.example.letsgongbu.dto.response.StudyRoomResponseDto;
+import com.example.letsgongbu.security.UserDetailsImpl;
 import com.example.letsgongbu.service.StudyRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.util.List;
 
@@ -20,67 +19,76 @@ public class StudyRoomController {
 
     private final StudyRoomService studyRoomService;
 
-    @GetMapping("/studyroom/all")
+    // 모든 스터디룸 보기
+    @GetMapping("/study-room/all")
     public String enterStudyRoom(Model model){
-        List<All> dtoList = studyRoomService.findAll();
-        model.addAttribute("studyrooms", dtoList);
-        return "/studyroom/all-rooms";
+        List<StudyRoomResponseDto> studyRooms = studyRoomService.findAll();
+        model.addAttribute("studyrooms", studyRooms);
+        return "study-room/all-rooms";
     }
 
-    @GetMapping("/studyroom/new")
+    // 스터디룸 생성 페이지
+    @GetMapping("/study-room/new")
     public String getCreateStudyRoomPage(@ModelAttribute StudyRoomForm studyRoomForm){
-        return "/studyroom/create-study-room";
+        return "study-room/create-study-room";
     }
 
-    @PostMapping("/studyroom/new")
+    // 스터디룸 생성
+    @PostMapping("/study-room/new")
     public String openStudyRoom(@ModelAttribute StudyRoomForm studyRoomForm,
-                                @AuthenticationPrincipal UserDetails userDetails) throws ParseException {
+                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
         studyRoomService.openStudyRoom(studyRoomForm, userDetails);
-        return "redirect:/studyroom/all";
+        return "redirect:/study-room/all";
     }
 
-    @GetMapping("/studyroom/{roomId}/edit")
+    // 스터디룸 수정 페이지
+    @GetMapping("/study-room/{roomId}/edit")
     public String getEditStudyRoomPage(@PathVariable Long roomId,
                                        Model model,
                                        @AuthenticationPrincipal UserDetails userDetails) {
         studyRoomService.getNoAccess(roomId, userDetails);
         StudyRoomForm studyRoomForm = studyRoomService.findStudyRoomInformation(roomId);
         model.addAttribute("studyRoomForm", studyRoomForm);
-        return "/studyroom/edit-study-room";
+        return "study-room/edit-study-room";
     }
-
-    @PostMapping("/studyroom/{roomId}/update")
+    
+    // 스터디룸 설정 정보 업데이트
+    @PostMapping("/study-room/{roomId}/update")
     public String updateStudyRoom(@PathVariable Long roomId,
                                   @ModelAttribute StudyRoomForm studyRoomForm,
                                   @AuthenticationPrincipal UserDetails userDetails) {
         studyRoomService.updateStudyRoom(roomId, studyRoomForm, userDetails);
-        return "redirect:/studyroom/all";
+        return "redirect:/study-room/all";
     }
 
-    @PostMapping("/studyroom/{roomId}/delete")
+    // 스터디룸 삭제
+    @PostMapping("/study-room/{roomId}/delete")
     public String deleteStudyRoom(@PathVariable Long roomId,
                                   @AuthenticationPrincipal UserDetails userDetails) {
         studyRoomService.deleteStudyRoom(roomId, userDetails);
-        return "redirect:/studyroom/all";
+        return "redirect:/study-room/all";
     }
 
-    @PostMapping("/studyroom/join/{roomId}")
+    // 새 스터디룸 입장
+    @PostMapping("/study-room/join/{roomId}")
     public String joinStudyRoom(@PathVariable Long roomId,
                                 @AuthenticationPrincipal UserDetails userDetails) {
         studyRoomService.joinStudyRoom(roomId, userDetails);
-        return "redirect:/studyroom?roomId=" + roomId;
+        return "redirect:/study-room?roomId=" + roomId;
     }
 
-    @PostMapping("/studyroom/leave/{roomId}")
+    // 스터디룸 떠나기
+    @PostMapping("/study-room/leave/{roomId}")
     public String leaveStudyRoom(@PathVariable Long roomId,
                                  @AuthenticationPrincipal UserDetails userDetails) {
         studyRoomService.leaveStudyRoom(roomId, userDetails);
-        return "redirect:/studyroom/all";
+        return "redirect:/study-room/all";
     }
 
-    @GetMapping("/studyroom")
+    // 참여중인 스터디룸 입장
+    @GetMapping("/study-room")
     public String enterStudyRoom(@RequestParam Long roomId, @AuthenticationPrincipal UserDetails userDetails) {
         studyRoomService.matchMemberAndStudyRoom(roomId, userDetails);
-        return "/studyroom/in-study-room";
+        return "study-room/in-study-room";
     }
 }

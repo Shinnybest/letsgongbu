@@ -1,16 +1,17 @@
 package com.example.letsgongbu.service;
 
 import com.example.letsgongbu.dto.request.StudyRoomForm;
-import com.example.letsgongbu.dto.response.StudyRoomResponseDto.All;
+import com.example.letsgongbu.dto.response.StudyRoomResponseDto;
+import com.example.letsgongbu.security.UserDetailsImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.text.ParseException;
 import java.util.List;
 
 public interface StudyRoomService {
-    List<All> findAll();
+    List<StudyRoomResponseDto> findAll();
 
-    void openStudyRoom(StudyRoomForm studyRoomForm, UserDetails userDetails) throws ParseException;
+    void openStudyRoom(StudyRoomForm studyRoomForm, UserDetailsImpl userDetails) throws ParseException;
 
     StudyRoomForm findStudyRoomInformation(Long roomId);
 
@@ -25,4 +26,6 @@ public interface StudyRoomService {
     void matchMemberAndStudyRoom(Long roomId, UserDetails userDetails);
 
     void getNoAccess(Long roomId, UserDetails userDetails);
+
+    List<StudyRoomResponseDto> findMyStudyRooms(UserDetails userDetails);
 }

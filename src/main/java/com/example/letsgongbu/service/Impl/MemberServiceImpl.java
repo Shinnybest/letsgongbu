@@ -7,10 +7,10 @@ import com.example.letsgongbu.repository.MemberRepository;
 import com.example.letsgongbu.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.stereotype.Service;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Service
@@ -45,15 +45,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void signup(String username, String loginId, String password) {
         String encodePassword = passwordEncoder.encode(password);
-        Member member = new Member(username, loginId, encodePassword, null, null);
+        Member member = new Member(username, loginId, encodePassword);
         memberRepository.save(member);
     }
 
     @Override
-    public Object getMemberName(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Object sessionValue = session.getAttribute("LOGIN");
-        String value = (String) sessionValue;
-        return new MemberResponseDto.MemberName(value);
+    public MemberResponseDto.MemberName getMemberName(UserDetails userDetails) {
+        return new MemberResponseDto.MemberName(userDetails.getUsername());
     }
 }
