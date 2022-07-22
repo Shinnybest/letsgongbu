@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,17 +17,20 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/comment/{postTitle}")
-    public String uploadComment(@PathVariable String postTitle, @ModelAttribute("commentForm") CommentForm commentForm, @AuthenticationPrincipal UserDetails userDetails) {
-        commentService.saveComment(postTitle, commentForm, userDetails);
-        return "redirect:/posts/" + postTitle;
+    @PostMapping("/comment/{postId}")
+    public String uploadComment(@PathVariable Long postId,
+                                @ModelAttribute("commentForm") CommentForm commentForm,
+                                @AuthenticationPrincipal UserDetails userDetails) {
+        commentService.saveComment(postId, commentForm, userDetails);
+        return "redirect:/posts/" + postId;
     }
 
-    @PostMapping("/comment/{postTitle}/{commentsId}/delete")
-    public String deleteComment(@PathVariable String postTitle, @PathVariable Long commentsId, HttpServletRequest request) {
-        commentService.deleteComment(commentsId);
-        String referer = request.getHeader("referer");
-        return "redirect:/posts/" + postTitle;
+    @PostMapping("/comment/{postId}/{commentId}/delete")
+    public String deleteComment(@PathVariable Long postId,
+                                @PathVariable Long commentId,
+                                @AuthenticationPrincipal UserDetails userDetails) {
+        commentService.deleteComment(commentId, userDetails);
+        return "redirect:/posts/" + postId;
     }
 
 }
