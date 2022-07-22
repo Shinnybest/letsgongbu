@@ -26,14 +26,14 @@ public class Member {
     @Column
     private String password;
 
-    @Column
-    private String cookieValue;
+//    @Column
+//    private String cookieValue;
+//
+//    @Column
+//    private LocalDate sessionLimit;
 
-    @Column
-    private LocalDate sessionLimit;
-
-    @Column
-    private boolean Enabled;
+//    @Column
+//    private boolean Enabled;
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
@@ -45,11 +45,10 @@ public class Member {
     private List<MemberStudyRoom> memberStudyRooms = new ArrayList<>();
 
 
-    public Member(String username, String loginId, String password, String cookieValue, LocalDate sessionLimit) {
+    public Member(String username, String loginId, String password) {
         this.username = username;
         this.loginId = loginId;
         this.password = password;
-        this.cookieValue = cookieValue;
-        this.sessionLimit = sessionLimit;
+
     }
 }
