@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1 th:text="'스터디룸 만들기'"></h1>
+<form th:object="${studyRoomForm}" th:method="put" th:action="@{/study-room/{roomId}/update(roomId=${studyRoomForm.id})}">
+    <div>
+        <label for="title">제목</label>
+        <input type="text" id="title" th:field="*{title}">
+    </div>
+    <div>
+        <label for="content">썸네일</label>
+        <input type="text" id="content" th:field="*{thumbnail}">
+    </div>
+    <div>
+        <select th:field="*{mainCategory}">
+            <option value="">선택</option>
+            <option th:value="'CS'" th:text="#{mainCategory.CS}"></option>
+            <option th:value="'LANGUAGE'" th:text="#{mainCategory.Framework}"></option>
+            <option th:value="'FRAMEWORK'" th:text="#{mainCategory.Language}"></option>
+            <option th:value="'ALGORITHMS'" th:text="#{mainCategory.Algorithm}"></option>
+        </select>
+    </div>
+    <div>
+        <select th:field="*{subCategory}">
+            <option value="">선택</option>
+            <option th:value="'NETWORK'" th:text="#{subCategory.Network}"></option>
+            <option th:value="'OS'" th:text="#{subCategory.OS}"></option>
+            <option th:value="'PYTHON'" th:text="#{subCategory.Python}"></option>
+            <option th:value="'JAVA'" th:text="#{subCategory.Java}"></option>
+            <option th:value="'SPRING'" th:text="#{subCategory.Spring}"></option>
+            <option th:value="'DJANGO'" th:text="#{subCategory.Django}"></option>
+            <option th:value="'HEAP'" th:text="#{subCategory.Heap}"></option>
+            <option th:value="'DP'" th:text="#{subCategory.DP}"></option>
+        </select>
+    </div>
+    <label>시작일 입력:
+        <input type="date" th:field="*{startDay}" required pattern="\d{4}-\d{2}-\d{2}">
+        <span class="validity"></span>
+    </label>
+    <label>종료일 입력:
+        <input type="date" th:field="*{endDay}" required pattern="\d{4}-\d{2}-\d{2}">
+        <span class="validity"></span>
+    </label>
+    <button type="submit">스터디룸 수정!</button>
+</form>
+<form th:action="@{/study-room/{roomId}/delete(roomId=${studyRoomForm.id})}" th:method="delete">
+    <button type="submit">스터디룸 삭제!</button>
+</form>
+</body>
+</html>

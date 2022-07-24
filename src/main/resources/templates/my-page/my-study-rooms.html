@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>NUMBER</th>
+        <th>TITLE</th>
+        <th>MAIN</th>
+        <th>SUB</th>
+        <th>START</th>
+        <th>END</th>
+        <th>IMAGE</th>
+    </tr>
+    <tr th:each="studyroom : ${studyRooms}">
+        <td th:text="${studyroomStat.count}"></td>
+        <td th:text="${studyroom.title}"><a th:href="@{/posts/{postId}(postId=${post.id})}"></a></td>
+        <td th:text="${studyroom.mainCategory}"></td>
+        <td th:text="${studyroom.subCategory}"></td>
+        <td th:text="${studyroom.startDay}"></td>
+        <td th:text="${studyroom.imgUrl}"></td>
+    </tr>
+</table>
+</body>
+</html>
