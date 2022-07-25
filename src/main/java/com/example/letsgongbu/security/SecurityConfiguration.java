@@ -1,8 +1,6 @@
-package com.example.letsgongbu.config;
+package com.example.letsgongbu.security;
 
 import com.example.letsgongbu.repository.MemberRepository;
-import com.example.letsgongbu.security.AuthenticationSuccessHandlerImpl;
-import com.example.letsgongbu.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,8 +32,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .antMatchers("/", "/login", "/posts", "/studyroom/all", "/sign-up", "/test/get/post", "/test/post/post", "/login/information")
-                        .permitAll().antMatchers(HttpMethod.POST, "/api/post")
+                        .antMatchers("/", "/login", "/posts", "/study-room/all", "/sign-up", "/login/information")
+                        .permitAll()
+                        .antMatchers(HttpMethod.POST, "/api/post")
                         .permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()

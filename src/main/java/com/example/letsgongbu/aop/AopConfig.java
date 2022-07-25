@@ -1,6 +1,5 @@
-package com.example.letsgongbu.config;
+package com.example.letsgongbu.aop;
 
-import com.example.letsgongbu.aop.RequestLoggingAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
