@@ -3,6 +3,7 @@ package com.example.letsgongbu.dto.response;
 import com.example.letsgongbu.domain.Comment;
 import com.example.letsgongbu.domain.MainCategory;
 import com.example.letsgongbu.domain.SubCategory;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class PostAndCommentResponseDto {
     private int commentCnt;
     private List<CommentResponseDto> comments;
 
+    @Builder
     public PostAndCommentResponseDto(Long id, String title, String postContent, String postWriter, LocalDateTime postCreatedAt, MainCategory mainCategory, SubCategory subCategory, int commentCnt, List<Comment> comments) {
         this.id = id;
         this.title = title;
