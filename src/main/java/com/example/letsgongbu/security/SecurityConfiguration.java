@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfiguration {
