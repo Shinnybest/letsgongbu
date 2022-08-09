@@ -38,7 +38,7 @@ public class MyPageController {
     @GetMapping("/my-page/posts")
     public String getAllMyPosts(@AuthenticationPrincipal UserDetails userDetails,
                                 Model model) {
-        List<PostResponseDto> posts = boardService.findAllPostsByMe(userDetails);
+        List<PostResponseDto> posts = boardService.findAllPostsByMe(userDetails.getUsername());
         model.addAttribute("posts", posts);
         return "my-page/my-posts";
     }

@@ -46,18 +46,19 @@ public class BoardController {
 
     // 상세 게시글 보기
     @GetMapping("/posts/{postId}")
-    public String getOnePost(@AuthenticationPrincipal UserDetails userDetails,
+    public String readPostPage(@AuthenticationPrincipal UserDetails userDetails,
                              @PathVariable Long postId,
                              Model model,
                              @ModelAttribute("commentForm") CommentForm commentForm) {
-        PostAndCommentResponseDto postAndComments= boardService.findPostAndComments(postId, userDetails);
+        PostAndCommentResponseDto postAndComments= boardService.findPostAndComments(postId, userDetails.getUsername());
         model.addAttribute("postAndComments", postAndComments);
         return "board/read-post";
     }
 
     // 게시글 작성 페이지
     @GetMapping("/post/new")
-    public String getOnePost(@AuthenticationPrincipal UserDetails userDetails,
+    public String getPostPage(
+            @AuthenticationPrincipal UserDetails userDetails,
                              @ModelAttribute PostForm postForm) {
         return "board/upload-post";
     }
@@ -66,8 +67,7 @@ public class BoardController {
     @PostMapping("/post")
     public String uploadPost(@ModelAttribute("postForm") PostForm postForm,
                              @AuthenticationPrincipal UserDetails userDetails) {
-        Long postId = boardService.uploadPost(postForm, userDetails);
-        System.out.println("postId" + postId);
+        Long postId = boardService.uploadPost(postForm, userDetails.getUsername());
         return "redirect:/posts/" + postId;
     }
 
@@ -76,7 +76,7 @@ public class BoardController {
     public String getUpdatePost(@PathVariable Long postId,
                                 Model model,
                                 @AuthenticationPrincipal UserDetails userDetails) {
-        PostUpdateForm postUpdateForm = boardService.getUpdatePost(postId, userDetails);
+        PostUpdateForm postUpdateForm = boardService.getUpdatePost(postId, userDetails.getUsername());
         model.addAttribute("postUpdateForm", postUpdateForm);
         return "board/update-post";
     }
@@ -86,7 +86,7 @@ public class BoardController {
     public String updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                              @PathVariable Long postId,
                              @ModelAttribute("postForm") PostForm postForm) {
-        boardService.updatePost(postId, postForm, userDetails);
+        boardService.updatePost(postId, postForm, userDetails.getUsername());
         return "redirect:/posts/" + postId;
     }
 
@@ -94,7 +94,7 @@ public class BoardController {
     @PostMapping("/posts/{postId}/delete")
     public String deletePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                              @PathVariable Long postId) {
-        boardService.deletePost(postId, userDetails);
+        boardService.deletePost(postId, userDetails.getUsername());
         return "redirect:/posts";
     }
 }
