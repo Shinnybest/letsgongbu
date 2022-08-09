@@ -1,5 +1,6 @@
 package com.example.letsgongbu.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,11 @@ public class Comment extends TimeStamped {
     private Member member;
 
     public Comment(String content) {
+        this.content = content;
+    }
+
+    public Comment(Long id, String content) {
+        this.id = id;
         this.content = content;
     }
 
