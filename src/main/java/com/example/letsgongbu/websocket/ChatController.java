@@ -12,7 +12,6 @@ public class ChatController {
     @MessageMapping("/chat/{chatroom}")
     @SendTo("/topic/{chatroom}")
     public ChatMessage handle(@Payload ChatMessage chatMessage, @DestinationVariable String chatroom) {
-        System.out.println("messageForm.toString() = " + chatMessage.toString());
         return chatMessage;
     }
 }
