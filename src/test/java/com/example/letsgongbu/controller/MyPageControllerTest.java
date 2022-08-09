@@ -102,7 +102,7 @@ class MyPageControllerTest {
             posts.add(newDto);
         }
         // when
-        when(boardServiceMock.findAllPostsByMe((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        when(boardServiceMock.findAllPostsByMe(SecurityContextHolder.getContext().getAuthentication().getName()))
                 .thenReturn(posts);
         // then
         mockMvc.perform(get("/my-page/posts"))

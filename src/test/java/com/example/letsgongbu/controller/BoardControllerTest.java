@@ -11,12 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -85,7 +82,7 @@ class BoardControllerTest {
                 .comments(Collections.emptyList())
                 .build();
 
-        when(boardServiceMock.findPostAndComments(1L, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        when(boardServiceMock.findPostAndComments(1L, SecurityContextHolder.getContext().getAuthentication().getName()))
                 .thenReturn(postAndComments);
 
         //when, then
@@ -124,7 +121,7 @@ class BoardControllerTest {
                 .subCategory(SubCategory.OS)
                 .build();
 
-        when(boardServiceMock.getUpdatePost(1L, (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()))
+        when(boardServiceMock.getUpdatePost(1L, SecurityContextHolder.getContext().getAuthentication().getName()))
                 .thenReturn(postUpdateForm);
 
         // then
