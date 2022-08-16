@@ -11,7 +11,8 @@ public class ChatController {
 
     @MessageMapping("/chat/{chatroom}")
     @SendTo("/topic/{chatroom}")
-    public ChatMessage handle(@Payload ChatMessage chatMessage, @DestinationVariable String chatroom) {
+    public ChatMessage handle(@Payload ChatMessage chatMessage, @DestinationVariable String chatroom, java.security.Principal principal) {
+        chatMessage.addWriter(principal.getName());
         return chatMessage;
     }
 }

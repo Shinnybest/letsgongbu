@@ -74,10 +74,10 @@
         let new_pTag = document.createElement('p');
         let message = JSON.parse(payload.body);
         if (message.type === 'JOIN') {
-            new_pTag.innerHTML = message.chatroom + "에 " + "누구 님이 입장하셨습니다.";
+            new_pTag.innerHTML = message.chatroom + "에 " + message.writer +"님이 입장하셨습니다.";
         }
         else if (message.type === 'CHAT') {
-            new_pTag.innerHTML = "누구 님: " + message.content;
+            new_pTag.innerHTML = message.writer + "님: " + message.content;
         }
         chatContainer.appendChild(new_pTag);
     }
