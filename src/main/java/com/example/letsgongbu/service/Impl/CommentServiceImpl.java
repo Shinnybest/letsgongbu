@@ -4,7 +4,6 @@ import com.example.letsgongbu.domain.Comment;
 import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.domain.Post;
 import com.example.letsgongbu.dto.request.CommentForm;
-import com.example.letsgongbu.dto.response.PostChange;
 import com.example.letsgongbu.dto.response.PostResponseDto;
 import com.example.letsgongbu.exception.CustomException;
 import com.example.letsgongbu.exception.Error;

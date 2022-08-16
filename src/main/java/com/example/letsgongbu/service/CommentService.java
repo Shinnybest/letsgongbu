@@ -1,7 +1,6 @@
 package com.example.letsgongbu.service;
 
 import com.example.letsgongbu.dto.request.CommentForm;
-import com.example.letsgongbu.dto.response.PostChange;
 import com.example.letsgongbu.dto.response.PostResponseDto;
 import org.springframework.security.core.userdetails.UserDetails;
 

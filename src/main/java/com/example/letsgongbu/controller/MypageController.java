@@ -2,7 +2,6 @@ package com.example.letsgongbu.controller;
 
 
 import com.example.letsgongbu.dto.response.MemberResponseDto;
-import com.example.letsgongbu.dto.response.PostChange;
 import com.example.letsgongbu.dto.response.PostResponseDto;
 import com.example.letsgongbu.dto.response.StudyRoomResponseDto;
 import com.example.letsgongbu.service.BoardService;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @Controller

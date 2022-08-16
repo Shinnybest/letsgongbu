@@ -35,9 +35,4 @@ public class MemberController {
         memberService.signup(signupForm);
         return "redirect:/login";
     }
-
-    @PostMapping("/withdrawal")
-    public String removeUser() {
-        return "redirect:/";
-    }
 }

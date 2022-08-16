@@ -2,7 +2,6 @@ package com.example.letsgongbu.config;
 
 import com.example.letsgongbu.domain.Member;
 import com.example.letsgongbu.security.UserDetailsImpl;
-import org.elasticsearch.common.collect.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +14,7 @@ import java.util.Map;
 public class WithMockCustomAccountSecurityContextFactory implements WithSecurityContextFactory<WithMockCustomAccount> {
     @Override
     public SecurityContext createSecurityContext(WithMockCustomAccount annotation) {
+        // 1
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         // 2

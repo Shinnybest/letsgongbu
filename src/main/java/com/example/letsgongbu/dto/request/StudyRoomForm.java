@@ -2,10 +2,8 @@ package com.example.letsgongbu.dto.request;
 
 import com.example.letsgongbu.domain.MainCategory;
 import com.example.letsgongbu.domain.SubCategory;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import java.text.SimpleDateFormat;
 
 @Getter
 public class StudyRoomForm {

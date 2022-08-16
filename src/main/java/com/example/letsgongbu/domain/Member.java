@@ -3,7 +3,6 @@ package com.example.letsgongbu.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +25,6 @@ public class Member {
     @Column
     private String password;
 
-//    @Column
-//    private String cookieValue;
-//
-//    @Column
-//    private LocalDate sessionLimit;
-
-//    @Column
-//    private boolean Enabled;
-
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
 
@@ -49,6 +39,5 @@ public class Member {
         this.username = username;
         this.loginId = loginId;
         this.password = password;
-
     }
 }
