@@ -3,8 +3,6 @@ package com.example.letsgongbu.security;
 import com.example.letsgongbu.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,22 +23,18 @@ public class SecurityConfiguration {
 
     private final MemberRepository memberRepository;
     private final DataSource dataSource;
-    private final AuthenticationSuccessHandlerImpl successHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .antMatchers("/", "/login", "/posts", "/study-room/all", "/sign-up", "/login/information")
-                        .permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/post")
+                        .antMatchers("/", "/login", "/posts", "/study-room/all", "/sign-up")
                         .permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .successHandler(successHandler)
                         .defaultSuccessUrl("/"))
                 .rememberMe(rememberMe -> rememberMe
                                 .key("rememberMeKey")
