@@ -40,9 +40,7 @@
 ## ERD
 
 ---
-<p align="center">
- <img src = "./ERD.png", height="100x", width="100px">
-</p>
+![ERD](./ERD.png)
 
 ## 문제 해결 과정
 
